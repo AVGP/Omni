@@ -7,6 +7,15 @@
   <body>
     <o-window width="300" height="200" left="500">First app</o-window>
     <o-window width="500" height="500" left="200">Second app</o-window>
-
+    <script>
+      window.addEventListener("oWindow-focus", function(e) {
+        var windows = document.querySelectorAll("o-window");
+        for(var i=0; i<windows.length;i++) {
+          if(!windows[i].impl.isEqualNode(e.srcElement)) {
+            windows[i].dispatchEvent(new Event("oWindow-blur"));
+          }
+        };
+      });
+    </script>
   </body>
 </html>

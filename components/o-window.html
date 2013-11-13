@@ -63,6 +63,7 @@
         });
 
         this.$.window.addEventListener("click", function() {
+          self.$.window.style.zIndex = LAYERS.FOCUS;
           self.fire("oWindow-focus");
         });
 
