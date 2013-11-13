@@ -13,6 +13,7 @@
         border: 1px solid #ccc;
         position: absolute;
         -webkit-transform3d: translateZ(0);
+        background-color: white;
       }
         
       header {
@@ -55,6 +56,7 @@
         
         this.$.topbar.addEventListener("mousedown", function(e) {
           self.isDragged = true;
+          self.$.window.style.zIndex = 1000;
           self.dragOffsets = { x: e.offsetX, y: e.offsetY };
           window.addEventListener("mousemove", windowDragListener);
         });
@@ -63,6 +65,7 @@
           self.isDragged = false;
           self.left = self.dragNewCoords.x;
           self.top  = self.dragNewCoords.y;
+          self.$.window.style.zIndex = 0;
           window.removeEventListener("mousemove", windowDragListener);
         });
       },
