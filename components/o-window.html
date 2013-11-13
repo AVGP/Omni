@@ -1,0 +1,88 @@
+<polymer-element name="o-window" attributes="width height left top">
+  <template>
+    <article id="window" class="window">
+        <header id="topbar">
+            <h1>Testapp</h1>
+        </header>
+        <div>
+            Hey there, I am an app
+        </div>
+    </article>
+    <style>
+      .window {
+        border: 1px solid #ccc;
+        position: absolute;
+        -webkit-transform3d: translateZ(0);
+      }
+        
+      header {
+        background-color: #cef;
+      }
+        
+      header h1 {
+        margin:  0px;
+        padding: 2px;
+      }
+    </style>
+  </template>
+  
+  <script>
+    Polymer('o-window', {
+      top:      0,
+      left:     0,
+      width:  400,
+      height: 500,
+      
+      ready: function() {
+        var self = this;
+        this.$.window.style.width  = this.width  + "px";
+        this.$.window.style.height = this.height + "px";
+        this.$.window.style.left   = this.left   + "px";
+        this.$.window.style.top    = this.top    + "px";
+        
+        var windowDragListener = function(event) {
+          if(new Date().getTime() - self.lastDragEventHandled < 5) return;
+          self.lastDragEventHandled = new Date().getTime();
+
+          var newX = event.clientX - self.dragOffsets.x,
+              newY = event.clientY - self.dragOffsets.y;
+
+          self.dragNewCoords = { x: newX, y: newY };
+
+          self.$.window.style.left = newX + "px";
+          self.$.window.style.top  = newY + "px";
+        };
+        
+        this.$.topbar.addEventListener("mousedown", function(e) {
+          self.isDragged = true;
+          self.dragOffsets = { x: e.offsetX, y: e.offsetY };
+          window.addEventListener("mousemove", windowDragListener);
+        });
+        
+        this.$.topbar.addEventListener("mouseup", function() {
+          self.isDragged = false;
+          self.left = self.dragNewCoords.x;
+          self.top  = self.dragNewCoords.y;
+          window.removeEventListener("mousemove", windowDragListener);
+        });
+      },
+      
+//Observers
+      leftChanged: function() {
+        this.$.window.style.left = this.left + "px";
+      },
+      topChanged: function() {
+        this.$.window.style.top = this.top + "px";
+      },
+      heightChanged: function() {
+        if(!this.$.window || !this.$.window.style) return;
+        console.log(this.height);
+        this.$.window.style.height = this.height; 
+      },
+      widthChanged: function() {
+        if(!this.$.window || !this.$.window.style) return;
+        this.$.window.style.width = this.width; 
+      }
+    });
+  </script>
+</polymer-element>
