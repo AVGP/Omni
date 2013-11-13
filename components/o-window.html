@@ -5,7 +5,7 @@
             <h1>Testapp</h1>
         </header>
         <div>
-            Hey there, I am an app
+            <content></content>
         </div>
     </article>
     <style>
@@ -28,6 +28,8 @@
   </template>
   
   <script>
+    var LAYERS = { DRAGGING: 1000, FOCUS: 10, NORMAL: 0 };
+    
     Polymer('o-window', {
       top:      0,
       left:     0,
@@ -40,15 +42,17 @@
         this.$.window.style.height = this.height + "px";
         this.$.window.style.left   = this.left   + "px";
         this.$.window.style.top    = this.top    + "px";
-        
-        var windowDragListener = function(event) {
-          if(new Date().getTime() - self.lastDragEventHandled < 5) return;
-          self.lastDragEventHandled = new Date().getTime();
 
+//Event listeners on the template
+        var windowDragListener = function(event) {
+          if(new Date().getTime() - self.lastDragEventHandled < 5) return; //debounce the events
+          if(!self.dragOffsets) return;
+
+          self.lastDragEventHandled = new Date().getTime();
           var newX = event.clientX - self.dragOffsets.x,
               newY = event.clientY - self.dragOffsets.y;
 
-          self.dragNewCoords = { x: newX, y: newY };
+          self.dragNewCoords = { x: newX, y: newY }; //used later to actually do the expensive update operation with the observer being involved
 
           self.$.window.style.left = newX + "px";
           self.$.window.style.top  = newY + "px";
@@ -56,16 +60,17 @@
         
         this.$.topbar.addEventListener("mousedown", function(e) {
           self.isDragged = true;
-          self.$.window.style.zIndex = 1000;
+          self.$.window.style.zIndex = LAYERS.DRAGGING;
           self.dragOffsets = { x: e.offsetX, y: e.offsetY };
           window.addEventListener("mousemove", windowDragListener);
         });
         
         this.$.topbar.addEventListener("mouseup", function() {
           self.isDragged = false;
-          self.left = self.dragNewCoords.x;
-          self.top  = self.dragNewCoords.y;
-          self.$.window.style.zIndex = 0;
+          if(self.dragNewCoords) {
+            self.left = self.dragNewCoords.x;
+            self.top  = self.dragNewCoords.y;
+          }
           window.removeEventListener("mousemove", windowDragListener);
         });
       },
@@ -79,7 +84,6 @@
       },
       heightChanged: function() {
         if(!this.$.window || !this.$.window.style) return;
-        console.log(this.height);
         this.$.window.style.height = this.height; 
       },
       widthChanged: function() {
