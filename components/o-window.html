@@ -1,14 +1,18 @@
-<polymer-element name="o-window" attributes="width height left top">
+<polymer-element name="o-window" attributes="width height left top name">
   <template>
     <article id="window" class="window">
         <header id="topbar">
-            <h1>Testapp</h1>
+            <h1>{{name}}</h1>
         </header>
         <div>
             <content></content>
         </div>
     </article>
     <style>
+      :host{
+        font-family: Helvetica, Arial, sans-serif;
+      }
+    
       .window {
         border: 1px solid #ccc;
         position: absolute;
@@ -17,7 +21,8 @@
       }
         
       header {
-        background-color: #cef;
+        background-color: black;
+        color: white;
       }
         
       header h1 {
