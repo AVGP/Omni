@@ -11,7 +11,7 @@
       window.addEventListener("oWindow-focus", function(e) {
         var windows = document.querySelectorAll("o-window");
         for(var i=0; i<windows.length;i++) {
-          if(!windows[i].impl.isEqualNode(e.srcElement)) {
+          if(!windows[i].isEqualNode(e.srcElement)) {
             windows[i].dispatchEvent(new Event("oWindow-blur"));
           }
         };
