@@ -18,18 +18,23 @@
         position: absolute;
         -webkit-transform3d: translateZ(0);
         background-color: white;
+        box-shadow: 1px 1px 4px 1px #666;
       }
-        
+
+      .inactive {
+        box-shadow: 1px 1px 2px 1px #ccc;
+      }
+
       header {
         background-color: black;
         color: white;
       }
-      
-      header.inactive {
+
+      .inactive header {
         background-color: #666;
         color: #aaa;
       }
-        
+
       header h1 {
         margin:  0px;
         padding: 2px;
@@ -53,6 +58,16 @@
         this.$.window.style.left   = this.left   + "px";
         this.$.window.style.top    = this.top    + "px";
 
+        var focus = function() {
+          self.$.window.style.zIndex = LAYERS.FOCUS;
+          self.$.window.classList.remove("inactive");
+          self.fire("oWindow-focus");
+        };
+        var blur = function() {
+          self.$.window.style.zIndex = LAYERS.NORMAL;
+          self.$.window.classList.add("inactive");
+        };
+
 //Event listeners on the template
         var windowDragListener = function(event) {
           if(new Date().getTime() - self.lastDragEventHandled < 5) return; //debounce the events
@@ -68,19 +83,15 @@
           self.$.window.style.top  = newY + "px";
         };
         
-        this.addEventListener("oWindow-blur", function() {
-          self.$.window.style.zIndex = LAYERS.NORMAL;
-          self.$.topbar.className = "inactive";
-        });
+        this.addEventListener("oWindow-blur", blur);
 
         this.$.window.addEventListener("click", function() {
-          self.$.window.style.zIndex = LAYERS.FOCUS;
-          self.$.topbar.className = "";
-          self.fire("oWindow-focus");
+          focus();
         });
 
         this.$.topbar.addEventListener("mousedown", function(e) {
           self.isDragged = true;
+          focus();
           self.$.window.style.zIndex = LAYERS.DRAGGING;
           self.dragOffsets = { x: e.offsetX, y: e.offsetY };
           window.addEventListener("mousemove", windowDragListener);
