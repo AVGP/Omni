@@ -24,6 +24,11 @@
         background-color: black;
         color: white;
       }
+      
+      header.inactive {
+        background-color: #666;
+        color: #aaa;
+      }
         
       header h1 {
         margin:  0px;
@@ -65,10 +70,12 @@
         
         this.addEventListener("oWindow-blur", function() {
           self.$.window.style.zIndex = LAYERS.NORMAL;
+          self.$.topbar.className = "inactive";
         });
 
         this.$.window.addEventListener("click", function() {
           self.$.window.style.zIndex = LAYERS.FOCUS;
+          self.$.topbar.className = "";
           self.fire("oWindow-focus");
         });
 
