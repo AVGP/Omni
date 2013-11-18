@@ -1,0 +1,22 @@
+<polymer-element name="o-window" attributes="width height left top">
+  <template>
+    <content></content>
+    <style>
+      :host {
+        position: relative;
+      }
+    </style>
+  </template>
+  <script>
+    Polymer('o-desktop', {
+      left: 0,
+      top:  0,
+      width: 0,
+      height: 0,
+      
+      ready: function() {
+          
+      }
+    });
+  </script>
+</polymer-element>
