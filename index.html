@@ -2,11 +2,14 @@
 <html>
   <head>
     <script src="bower_components/polymer/polymer.min.js"></script>
+    <link rel="import" href="components/o-desktop.html">
     <link rel="import" href="components/o-window.html">
   </head>
   <body>
-    <o-window width="300" height="200" left="500" name="App A">First app</o-window>
-    <o-window width="500" height="500" left="200" name="App B">Second app</o-window>
+    <o-desktop>
+      <o-window width="300" height="200" left="500" name="App A">First app</o-window>
+      <o-window width="500" height="500" left="200" name="App B">Second app</o-window>
+    </o-desktop>
     <script>
       window.addEventListener("oWindow-focus", function(e) {
         var windows = document.querySelectorAll("o-window");
