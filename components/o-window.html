@@ -7,6 +7,7 @@
         <div>
             <content></content>
         </div>
+        <div id="log"></div>
     </article>
     <style>
       :host{
@@ -70,12 +71,14 @@
 
 //Event listeners on the template
         var windowDragListener = function(event) {
+          event.preventDefault();
+
           if(new Date().getTime() - self.lastDragEventHandled < 5) return; //debounce the events
           if(!self.dragOffsets) return;
 
           self.lastDragEventHandled = new Date().getTime();
-          var newX = event.clientX - self.dragOffsets.x,
-              newY = event.clientY - self.dragOffsets.y;
+          var newX = (event.clientX || event.touches[0].clientX) - self.dragOffsets.x,
+              newY = (event.clientY || event.touches[0].clientY) - self.dragOffsets.y;
 
           self.dragNewCoords = { x: newX, y: newY }; //used later to actually do the expensive update operation with the observer being involved
 
@@ -89,6 +92,38 @@
           focus();
         });
 
+        this.$.window.addEventListener("touchstart", function(e) {
+          e.preventDefault();
+
+          self.isDragged = true;
+          focus();
+          self.$.window.style.zIndex = LAYERS.DRAGGING;
+          var offsetX = e.offsetX,
+              offsetY = e.offsetY;
+          if(e.touches[0]) {
+            offsetX = e.touches[0].pageX - self.left; //e.touches[0].target.offsetLeft;
+            offsetY = e.touches[0].pageY - self.top;  //e.touches[0].target.offsetTop;
+          };
+
+          self.dragOffsets = { x: offsetX, y: offsetY };
+          window.addEventListener("touchmove", windowDragListener);
+
+        });
+
+        this.$.window.addEventListener("touchcancel", function(e) {
+          e.preventDefault();
+        });
+
+        this.$.window.addEventListener("touchend", function(e) {
+          e.preventDefault();
+          self.isDragged = false;
+          if(self.dragNewCoords) {
+            self.left = self.dragNewCoords.x;
+            self.top  = self.dragNewCoords.y;
+          }
+          window.removeEventListener("touchmove", windowDragListener);
+        });
+
         this.$.topbar.addEventListener("mousedown", function(e) {
           self.isDragged = true;
           focus();
@@ -96,7 +131,7 @@
           self.dragOffsets = { x: e.offsetX, y: e.offsetY };
           window.addEventListener("mousemove", windowDragListener);
         });
-        
+
         this.$.topbar.addEventListener("mouseup", function() {
           self.isDragged = false;
           if(self.dragNewCoords) {
@@ -106,7 +141,7 @@
           window.removeEventListener("mousemove", windowDragListener);
         });
       },
-      
+
 //Observers
       leftChanged: function() {
         this.$.window.style.left = this.left + "px";
