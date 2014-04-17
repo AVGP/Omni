@@ -13,13 +13,38 @@
       :host{
         font-family: Helvetica, Arial, sans-serif;
       }
-    
+
       .window {
         border: 1px solid #ccc;
-        position: absolute;
         -webkit-transform3d: translateZ(0);
         background-color: white;
         box-shadow: 1px 1px 4px 1px #666;
+
+      }
+
+      @media(min-width:800px) {
+        .window {
+          position: absolute;
+        }
+      }
+
+      @media(max-width: 799px) {
+        .window {
+          position: relative;
+          top: 0px !important;
+          left: 0px !important;
+          width: 100% !important;
+          display: block;
+          margin-bottom: 5px;
+        }
+
+        .inactive {
+          height: 32px !important;
+        }
+
+        .inactive > div {
+          display: none;
+        }
       }
 
       .inactive {
@@ -42,16 +67,16 @@
       }
     </style>
   </template>
-  
+
   <script>
     var LAYERS = { DRAGGING: 1000, FOCUS: 10, NORMAL: 0 };
-    
+
     Polymer('o-window', {
       top:      0,
       left:     0,
       width:  400,
       height: 500,
-      
+
       ready: function() {
         var self = this;
         this.$.window.style.width  = this.width  + "px";
@@ -85,7 +110,7 @@
           self.$.window.style.left = newX + "px";
           self.$.window.style.top  = newY + "px";
         };
-        
+
         this.addEventListener("oWindow-blur", blur);
 
         this.$.window.addEventListener("click", function() {
@@ -151,11 +176,11 @@
       },
       heightChanged: function() {
         if(!this.$.window || !this.$.window.style) return;
-        this.$.window.style.height = this.height; 
+        this.$.window.style.height = this.height;
       },
       widthChanged: function() {
         if(!this.$.window || !this.$.window.style) return;
-        this.$.window.style.width = this.width; 
+        this.$.window.style.width = this.width;
       }
     });
   </script>
